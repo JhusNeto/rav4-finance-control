@@ -3,6 +3,7 @@ import { Transaction, Category } from '@/lib/classification'
 import { MonthlyMetrics, CategoryMetrics, Alert } from '@/lib/projections'
 import { saveToServer } from '@/lib/dataPersistence'
 import { ModeState, AppMode } from '@/lib/modes'
+import { autoDetectSalary } from '@/lib/salaryDetection'
 
 export interface FinanceGoals {
   PIX_SAIDA: number
@@ -117,11 +118,22 @@ export const useFinanceStore = create<FinanceState>((set, get) => {
     rav4StartDate: new Date(), // Data de início padrão: hoje
 
     setTransactions: (transactions) => {
-      set({ transactions })
+      // Detecta salário automaticamente antes de atualizar
+      const detectedSalary = autoDetectSalary(transactions)
+      const currentState = get()
+      
+      // Atualiza salário apenas se detectou um valor válido e é diferente do atual
+      if (detectedSalary && detectedSalary !== currentState.salary) {
+        console.log(`💰 Salário detectado automaticamente: R$ ${detectedSalary.toFixed(2)}`)
+        set({ transactions, salary: detectedSalary })
+      } else {
+        set({ transactions })
+      }
+      
       const state = get()
       // Salva em background (não bloqueia a UI)
       saveToServer(
-        transactions,
+        state.transactions,
         state.initialBalance,
         state.salary,
         state.goals,
@@ -326,10 +338,23 @@ export const useFinanceStore = create<FinanceState>((set, get) => {
       import('@/lib/dataPersistence').then(({ loadFromServer }) => {
         loadFromServer().then(stored => {
           if (stored) {
+            const transactions = stored.transactions || []
+            
+            // Detecta salário automaticamente ao carregar
+            const detectedSalary = autoDetectSalary(transactions)
+            const storedSalary = stored.salary || 5000
+            
+            // Usa salário detectado se disponível, senão usa o armazenado
+            const finalSalary = detectedSalary || storedSalary
+            
+            if (detectedSalary && detectedSalary !== storedSalary) {
+              console.log(`💰 Salário detectado automaticamente ao carregar: R$ ${detectedSalary.toFixed(2)} (anterior: R$ ${storedSalary.toFixed(2)})`)
+            }
+            
             set({
-              transactions: stored.transactions || [],
+              transactions,
               initialBalance: stored.initialBalance || 0,
-              salary: stored.salary || 5000,
+              salary: finalSalary,
               goals: stored.goals || defaultGoals,
               currentDate: stored.currentDate ? new Date(stored.currentDate) : new Date(),
               customCategories: stored.customCategories || [],

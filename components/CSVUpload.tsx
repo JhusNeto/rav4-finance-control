@@ -18,6 +18,7 @@ export function CSVUpload() {
   const { 
     setTransactions, 
     setInitialBalance, 
+    setSalary,
     transactions, 
     initialBalance,
     salary,
@@ -135,12 +136,21 @@ export function CSVUpload() {
         })
       }
       
+      // Detecta salário automaticamente antes de salvar
+      const { autoDetectSalary } = await import('@/lib/salaryDetection')
+      const detectedSalary = autoDetectSalary(uniqueTransactions)
+      const finalSalary = detectedSalary || salary
+      
+      if (detectedSalary && detectedSalary !== salary) {
+        console.log(`💰 Salário detectado automaticamente após upload: R$ ${detectedSalary.toFixed(2)} (anterior: R$ ${salary.toFixed(2)})`)
+      }
+      
       // Salva automaticamente no servidor (JSON permanente)
       const { customCategories } = useFinanceStore.getState()
       const saved = await saveToServer(
         uniqueTransactions,
         finalInitialBalance,
-        salary,
+        finalSalary, // Usa salário detectado ou o atual
         goals,
         new Date(), // Sempre usa data atual
         customCategories
@@ -150,8 +160,14 @@ export function CSVUpload() {
         console.warn('Aviso: Dados salvos apenas localmente (servidor indisponível)')
       }
       
+      // Atualiza transações (isso vai detectar o salário automaticamente)
       setTransactions(uniqueTransactions)
       setInitialBalance(finalInitialBalance)
+      
+      // Se detectou um salário diferente, atualiza também
+      if (detectedSalary && detectedSalary !== salary) {
+        setSalary(finalSalary)
+      }
       setSuccess(true)
       
       setTimeout(() => {
