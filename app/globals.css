@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root,
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    color-scheme: dark !important;
+    background-color: hsl(222.2, 84%, 4.9%) !important;
+  }
+  
+  html.dark {
+    color-scheme: dark !important;
+    background-color: hsl(222.2, 84%, 4.9%) !important;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: hsl(222.2, 84%, 4.9%) !important;
+    color: hsl(210, 40%, 98%) !important;
+  }
+  
+  /* Forçar tema escuro em todos os elementos principais */
+  main {
+    background-color: hsl(222.2, 84%, 4.9%) !important;
+    color: hsl(210, 40%, 98%) !important;
+  }
+  
+  /* Cards sempre escuros */
+  [class*="bg-card"],
+  .bg-card {
+    background-color: hsl(222.2, 84%, 4.9%) !important;
+    color: hsl(210, 40%, 98%) !important;
+  }
+  
+  /* Backgrounds */
+  [class*="bg-background"],
+  .bg-background {
+    background-color: hsl(222.2, 84%, 4.9%) !important;
+  }
+  
+  [class*="bg-muted"],
+  .bg-muted {
+    background-color: hsl(217.2, 32.6%, 17.5%) !important;
+  }
+  
+  /* Textos */
+  [class*="text-foreground"],
+  .text-foreground {
+    color: hsl(210, 40%, 98%) !important;
+  }
+  
+  [class*="text-muted-foreground"],
+  .text-muted-foreground {
+    color: hsl(215, 20.2%, 65.1%) !important;
+  }
+  
+  /* Bordas */
+  [class*="border-border"],
+  .border-border {
+    border-color: hsl(217.2, 32.6%, 17.5%) !important;
+  }
+  
+  /* Componentes específicos */
+  h1, h2, h3, h4, h5, h6 {
+    color: hsl(210, 40%, 98%) !important;
+  }
+  
+  p {
+    color: hsl(210, 40%, 98%) !important;
+  }
+  
+  /* Aba ativa destacada - estilo militar */
+  [role="tab"][data-state="active"] {
+    background-color: hsl(217.2, 32.6%, 20%) !important;
+    color: hsl(210, 40%, 98%) !important;
+    border-bottom: 2px solid hsl(210, 40%, 98%) !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Aba inativa */
+  [role="tab"][data-state="inactive"] {
+    color: hsl(215, 20.2%, 65.1%) !important;
+  }
+  
+  /* TabsList background */
+  [role="tablist"] {
+    background-color: hsl(217.2, 32.6%, 12%) !important;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+

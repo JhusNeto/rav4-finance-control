@@ -1,0 +1,43 @@
+{
+  "transactions": [
+    {
+      "id": "tx-0-1234567890",
+      "date": "2025-09-01T00:00:00.000Z",
+      "description": "Pix - Enviado - João Silva",
+      "amount": 150.00,
+      "type": "SAIDA",
+      "category": "PIX_SAIDA",
+      "originalDescription": "Pix - Enviado - João Silva"
+    },
+    {
+      "id": "tx-1-1234567891",
+      "date": "2025-09-02T00:00:00.000Z",
+      "description": "Ifood - Restaurante",
+      "amount": 45.50,
+      "type": "SAIDA",
+      "category": "ALIMENTACAO_FORA",
+      "originalDescription": "Ifood - Restaurante"
+    },
+    {
+      "id": "tx-2-1234567892",
+      "date": "2025-09-12T00:00:00.000Z",
+      "description": "PLR",
+      "amount": 7116.90,
+      "type": "ENTRADA",
+      "category": "OUTROS",
+      "originalDescription": "PLR"
+    }
+  ],
+  "initialBalance": -372.93,
+  "salary": 5000,
+  "goals": {
+    "PIX_SAIDA": 500,
+    "ALIMENTACAO_FORA": 800,
+    "ASSINATURAS": 200,
+    "DIVIDAS_CDC": 1000
+  },
+  "currentDate": "2025-09-30T00:00:00.000Z",
+  "exportedAt": "2025-11-21T20:00:00.000Z",
+  "version": "1.0.0"
+}
+

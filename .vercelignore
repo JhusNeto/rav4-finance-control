@@ -1,0 +1,17 @@
+# Arquivos ignorados no deploy da Vercel
+
+# Dados locais
+data/storage/*.json
+
+# Arquivos de desenvolvimento
+*.md
+!README.md
+
+# Scripts locais
+scripts/
+
+# Documentação de setup (já configurado)
+SUPABASE_SETUP.md
+VERCEL_ENV.md
+DEPLOY.md
+
