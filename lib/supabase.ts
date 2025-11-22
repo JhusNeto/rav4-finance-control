@@ -38,7 +38,14 @@ export const supabase = (supabaseUrl && supabaseAnonKey)
 if (!supabaseUrl || !supabaseAnonKey) {
   if (typeof window === 'undefined') {
     // Apenas loga no servidor para evitar spam no console do cliente
-    console.error('❌ Variáveis de ambiente do Supabase não configuradas! Configure NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY no arquivo .env.local')
+    console.error('❌ Variáveis de ambiente do Supabase não configuradas!')
+    console.error('Configure NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    console.error('Na Vercel: Settings → Environment Variables')
+    console.error('Localmente: arquivo .env.local')
+  } else {
+    // No cliente, mostra erro mais amigável
+    console.error('❌ Supabase não configurado!')
+    console.error('Verifique as variáveis de ambiente na Vercel: Settings → Environment Variables')
   }
 }
 
@@ -114,7 +121,9 @@ export async function saveToSupabase(
 export async function loadFromSupabase(): Promise<Partial<FinanceDataRow> | null> {
   try {
     if (!supabase || !supabaseUrl || !supabaseAnonKey) {
-      console.error('❌ Supabase não configurado! Configure NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY no arquivo .env.local')
+      console.error('❌ Supabase não configurado!')
+      console.error('Configure NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY')
+      console.error('Na Vercel: Settings → Environment Variables')
       return null
     }
 
@@ -129,7 +138,18 @@ export async function loadFromSupabase(): Promise<Partial<FinanceDataRow> | null
         // Nenhum registro encontrado
         return null
       }
-      console.error('Erro ao carregar do Supabase:', error)
+      
+      // Erro de autenticação (401)
+      if (error.message?.includes('Invalid API key') || error.message?.includes('JWT') || error.code === 'PGRST301') {
+        console.error('❌ Erro de autenticação no Supabase!')
+        console.error('Verifique se NEXT_PUBLIC_SUPABASE_ANON_KEY está configurada corretamente na Vercel')
+        console.error('Use a chave "anon public", NÃO a "service_role"')
+        console.error('Vercel: Settings → Environment Variables → NEXT_PUBLIC_SUPABASE_ANON_KEY')
+        console.error('Erro completo:', error)
+      } else {
+        console.error('Erro ao carregar do Supabase:', error)
+      }
+      
       return null
     }
 
