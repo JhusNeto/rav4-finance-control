@@ -189,22 +189,42 @@ export async function loadFromSupabase(): Promise<Partial<FinanceDataRow> | null
 export async function deleteFromSupabase(): Promise<boolean> {
   try {
     if (!supabase || !supabaseUrl || !supabaseAnonKey) {
+      console.error('❌ Supabase não configurado! Configure NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY')
       return false
     }
 
-    const { error } = await supabase
+    console.log('🗑️ Tentando deletar dados do Supabase...')
+    
+    const { data, error } = await supabase
       .from(TABLE_NAME)
       .delete()
       .eq('id', 'main')
+      .select()
 
     if (error) {
-      console.error('Erro ao deletar do Supabase:', error)
+      console.error('❌ Erro ao deletar do Supabase:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      })
+      
+      // Se o erro for de permissão (RLS), fornece mensagem mais clara
+      if (error.code === '42501' || error.message?.includes('permission') || error.message?.includes('policy')) {
+        console.error('⚠️ Erro de permissão! Verifique as políticas RLS no Supabase.')
+        console.error('💡 Dica: A política RLS deve permitir DELETE para todos os usuários.')
+      }
+      
       return false
     }
 
+    console.log('✅ Dados deletados do Supabase:', data)
     return true
-  } catch (error) {
-    console.error('Erro ao deletar do Supabase:', error)
+  } catch (error: any) {
+    console.error('❌ Erro inesperado ao deletar do Supabase:', {
+      message: error?.message,
+      stack: error?.stack
+    })
     return false
   }
 }

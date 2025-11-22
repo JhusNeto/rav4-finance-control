@@ -259,15 +259,30 @@ export const useFinanceStore = create<FinanceState>((set, get) => {
       
       // Deleta do Supabase
       try {
+        console.log('🗑️ Iniciando limpeza do Supabase...')
         const { deleteFromSupabase } = await import('@/lib/supabase')
         const deleted = await deleteFromSupabase()
         if (deleted) {
           console.log('✅ Dados deletados do Supabase com sucesso')
+          // Mostra alerta visual para o usuário
+          if (typeof window !== 'undefined') {
+            alert('✅ Dados limpos com sucesso! O banco de dados foi limpo.')
+          }
         } else {
-          console.warn('⚠️ Não foi possível deletar do Supabase (pode não estar configurado)')
+          console.warn('⚠️ Não foi possível deletar do Supabase')
+          // Mostra alerta visual para o usuário
+          if (typeof window !== 'undefined') {
+            alert('⚠️ Atenção: Os dados locais foram limpos, mas pode ter ocorrido um problema ao limpar o banco de dados. Verifique o console para mais detalhes.')
+          }
         }
-      } catch (err) {
-        console.error('Erro ao deletar do Supabase:', err)
+      } catch (err: any) {
+        console.error('❌ Erro ao deletar do Supabase:', {
+          message: err?.message,
+          stack: err?.stack
+        })
+        if (typeof window !== 'undefined') {
+          alert('❌ Erro ao limpar o banco de dados. Verifique o console para mais detalhes.')
+        }
       }
     },
     
